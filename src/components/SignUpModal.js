@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.js';
+import { Modal } from 'bootstrap/dist/js/bootstrap.bundle';
 import SignUpForm from './SignUpForm';
 
 function SignUpModal({ setCurrentUser }) {

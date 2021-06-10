@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router } from 'react-router-dom';
 import 'bootswatch/dist/cosmo/bootstrap.css';
-import 'bootstrap/dist/js/bootstrap.bundle.js';
+import 'bootstrap/dist/js/bootstrap.bundle';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';

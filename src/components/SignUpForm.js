@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.js';
+import { Modal } from 'bootstrap/dist/js/bootstrap.bundle';
 import useIsMounted from '../hooks/useIsMounted';
 import postData from '../lib/postData';
 import SubmitBtn from './SubmitBtn';
