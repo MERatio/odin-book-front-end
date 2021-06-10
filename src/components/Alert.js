@@ -61,7 +61,7 @@ function Alert({ alert, onAlertDelete }) {
 	// Delete alert after 4 sec.
 	// Timeout will reset if an alert is deleted, because of rerender.
 	useEffect(() => {
-		const timeoutId = setTimeout(() => onAlertDelete(alert.id), 4000);
+		const timeoutId = setTimeout(() => onAlertDelete(alert.id), 10000);
 		return () => clearTimeout(timeoutId);
 	}, [alert, onAlertDelete]);
 
