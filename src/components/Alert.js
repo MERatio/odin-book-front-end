@@ -69,7 +69,7 @@ function Alert({ alert, onAlertDelete }) {
 		<div
 			className={`alert alert-${
 				alert.type || 'danger'
-			} d-flex align-items-center alert-dismissible`}
+			} d-flex align-items-center alert-dismissible mb-1`}
 			role="alert"
 			data-id={alert.id}
 		>
