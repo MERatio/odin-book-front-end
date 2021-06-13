@@ -1,40 +1,12 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle';
+import facebookSdkConfig from '../configs/facebookSdkConfig';
 import useIsMounted from '../hooks/useIsMounted';
 import postData from '../lib/postData';
 import SubmitBtn from './SubmitBtn';
 
-/* Facebook SDK is blocked 
-		 by blockers (Firefox Tracking Protection, uBlock Origin, etc...).
-	 Even if window.FB is set, some resource inside Facebook SDK is blocked too. 
-	 Therefore crashing the app (can't try catch).
-*/
-
-// Facebook SDK call this function automatically (with delay).
-window.fbAsyncInit = function () {
-	window.FB.init({
-		appId: `${process.env.REACT_APP_FACEBOOK_APP_ID}`,
-		cookie: true,
-		xfbml: true,
-		version: 'v10.0',
-	});
-
-	window.FB.AppEvents.logPageView();
-};
-
-// Insert Facebook SDK.
-(function (d, s, id) {
-	var js,
-		fjs = d.getElementsByTagName(s)[0];
-	if (d.getElementById(id)) {
-		return;
-	}
-	js = d.createElement(s);
-	js.id = id;
-	js.src = 'https://connect.facebook.net/en_US/sdk.js';
-	fjs.parentNode.insertBefore(js, fjs);
-})(document, 'script', 'facebook-jssdk');
+facebookSdkConfig();
 
 function SignInForm({ setIsLoading, setCurrentUser }) {
 	const isMounted = useIsMounted();
@@ -122,7 +94,8 @@ function SignInForm({ setIsLoading, setCurrentUser }) {
 				) {
 					window.alerts([
 						{
-							msg: 'Facebook email is required. Please select the Facebook button again.',
+							msg:
+								'Facebook email is required. Please select the Facebook button again.',
 							type: 'info',
 						},
 					]);
@@ -244,7 +217,8 @@ function SignInForm({ setIsLoading, setCurrentUser }) {
 				setIsFacebookSdkLoaded(false);
 				window.alerts([
 					{
-						msg: 'Facebook button is disabled because the Facebook SDK is blocked.',
+						msg:
+							'Facebook button is disabled because the Facebook SDK is blocked.',
 						type: 'info',
 					},
 				]);

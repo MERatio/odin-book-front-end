@@ -1,15 +1,19 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import { nanoid } from 'nanoid';
 import bus from './utils/bus';
 import getData from './lib/getData';
 import BootstrapSpinner from './components/BootstrapSpinner';
 import Alerts from './components/Alerts';
+import Navbar from './components/Navbar';
 import SignUpModal from './components/SignUpModal';
 import SignInView from './views/SignInView';
+import UsersShow from './views/UsersShow';
 
 function App() {
+  const history = useHistory();
+
   const [isLoading, setIsLoading] = useState(true);
   const [alerts, setAlerts] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
@@ -17,6 +21,15 @@ function App() {
   function handleAlertDelete(alertId) {
     const newAlerts = alerts.filter((alert) => alert.id !== alertId);
     setAlerts(newAlerts);
+  }
+
+  function signOut() {
+    localStorage.removeItem('jwt');
+    setCurrentUser(false);
+    history.push('/');
+    window.alerts([
+      { msg: 'You have successfully signed out', type: 'success' },
+    ]);
   }
 
   // Listen for 'alerts' event and sets the alerts.
@@ -55,6 +68,7 @@ function App() {
     <BootstrapSpinner type={'grow'} size={'3em'} />
   ) : (
     <>
+      {currentUser && <Navbar currentUser={currentUser} signOut={signOut} />}
       {alerts.length > 0 && (
         <div className="container">
           <div className="row justify-content-center">
@@ -88,6 +102,9 @@ function App() {
             ) : (
               <Redirect to="/" />
             )}
+          </Route>
+          <Route exact path="/users/:userId">
+            {currentUser ? <UsersShow /> : <Redirect to="/" />}
           </Route>
         </Switch>
       </main>
