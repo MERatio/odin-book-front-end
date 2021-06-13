@@ -39,7 +39,7 @@ function App() {
         ...alert,
         id: nanoid(),
       }));
-      setAlerts((prevAlerts) => prevAlerts.concat(alertsWithId));
+      setAlerts(alertsWithId);
     });
   }, []);
 
