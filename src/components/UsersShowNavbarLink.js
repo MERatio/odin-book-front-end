@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Route, NavLink } from 'react-router-dom';
-import getProfilePicture from '../lib/getProfilePicture';
+import getUserPicture from '../lib/getUserPicture';
 
 function UsersShowNavbarLink({ currentUser }) {
   return (
@@ -15,8 +15,8 @@ function UsersShowNavbarLink({ currentUser }) {
         >
           <img
             className="rounded-circle me-2"
-            src={getProfilePicture(currentUser)}
-            alt="Current user profile"
+            src={getUserPicture(currentUser)}
+            alt="Current user"
             width="28"
             height="28"
           />
