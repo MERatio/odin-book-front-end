@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'bootstrap/dist/js/bootstrap.bundle';
 import useIsMounted from '../hooks/useIsMounted';
-import postData from '../lib/postData';
+import postMultipartData from '../lib/postMultipartData';
 import SubmitBtn from './SubmitBtn';
 
 function SignUpForm({ setCurrentUser }) {
 	const isMounted = useIsMounted();
 
+	// Can only set file input value to '' for security reason.
 	const [state, setState] = useState({
 		firstName: '',
 		lastName: '',
@@ -40,9 +41,8 @@ function SignUpForm({ setCurrentUser }) {
 	function removeFormErrors() {
 		const signUpForm = document.getElementById('signUpForm');
 		if (signUpForm) {
-			const invalidFeedbackDivs = signUpForm.querySelectorAll(
-				'.invalid-feedback'
-			);
+			const invalidFeedbackDivs =
+				signUpForm.querySelectorAll('.invalid-feedback');
 			if (invalidFeedbackDivs.length === 0) {
 				return;
 			}
@@ -75,17 +75,28 @@ function SignUpForm({ setCurrentUser }) {
 		}
 
 		try {
-			const data = await postData(
+			const data = await postMultipartData(
 				`${process.env.REACT_APP_API_URL}/users`,
-				state
+				new FormData(e.target)
 			);
 			setIsSubmitting(false);
 			if (data.err) {
 				window.alerts([{ msg: data.err.message }]);
 			} else if (data.errors) {
-				const isEmailErrorIncluded = data.errors.some((error) => {
-					return error.param === 'email';
-				});
+				let isEmailErrorIncluded = false;
+				let isPictureErrorIncluded = false;
+				for (const error of data.errors) {
+					switch (error.param) {
+						case 'email':
+							isEmailErrorIncluded = true;
+							break;
+						case 'picture':
+							isPictureErrorIncluded = true;
+							break;
+						default:
+							break;
+					}
+				}
 				isMounted &&
 					setState({
 						firstName: data.user.firstName,
@@ -94,6 +105,7 @@ function SignUpForm({ setCurrentUser }) {
 						   if email is not valid.
 						*/
 						email: isEmailErrorIncluded ? '' : data.user.email,
+						...(isPictureErrorIncluded && { picture: '' }),
 						password: '',
 						passwordConfirmation: '',
 					});
@@ -117,6 +129,7 @@ function SignUpForm({ setCurrentUser }) {
 
 	useEffect(() => {
 		const signUpModal = document.getElementById('signUpModal');
+		const pictureInput = document.getElementById('picture');
 		// Reset state when sign up modal gets hidden.
 		signUpModal.addEventListener('hidden.bs.modal', (e) => {
 			removeFormErrors();
@@ -124,9 +137,11 @@ function SignUpForm({ setCurrentUser }) {
 				firstName: '',
 				lastName: '',
 				email: '',
+				picture: '',
 				password: '',
 				passwordConfirmation: '',
 			});
+			pictureInput.value = '';
 		});
 	}, []);
 
@@ -165,6 +180,19 @@ function SignUpForm({ setCurrentUser }) {
 					name="email"
 					value={state.email}
 					onChange={handleInputChange}
+					onFocus={handleInputFocus}
+				/>
+			</div>
+			<div className="input-group mb-3">
+				<label className="input-group-text" htmlFor="picture">
+					Upload picture (optional)
+				</label>
+				<input
+					type="file"
+					accept="image/*"
+					className="form-control"
+					id="picture"
+					name="picture"
 					onFocus={handleInputFocus}
 				/>
 			</div>
