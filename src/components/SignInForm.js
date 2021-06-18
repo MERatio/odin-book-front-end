@@ -94,8 +94,7 @@ function SignInForm({ setIsLoading, setCurrentUser }) {
 				) {
 					window.alerts([
 						{
-							msg:
-								'Facebook email is required. Please select the Facebook button again.',
+							msg: 'Facebook email is required. Please select the Facebook button again.',
 							type: 'info',
 						},
 					]);
@@ -217,8 +216,7 @@ function SignInForm({ setIsLoading, setCurrentUser }) {
 				setIsFacebookSdkLoaded(false);
 				window.alerts([
 					{
-						msg:
-							'Facebook button is disabled because the Facebook SDK is blocked.',
+						msg: 'Facebook button is disabled because the Facebook SDK is blocked.',
 						type: 'info',
 					},
 				]);
