@@ -1,14 +1,14 @@
 import { useParams } from 'react-router-dom';
 
-function UsersShow() {
+function UsersShowView() {
 	let { userId } = useParams();
 
 	return (
 		<>
-			<h1>TODO: UsersShow</h1>
+			<h1>TODO: UsersShowView</h1>
 			<h2>{userId}</h2>
 		</>
 	);
 }
 
-export default UsersShow;
+export default UsersShowView;

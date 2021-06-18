@@ -9,7 +9,7 @@ import Alerts from './components/Alerts';
 import Navbar from './components/Navbar';
 import SignUpModal from './components/SignUpModal';
 import SignInView from './views/SignInView';
-import UsersShow from './views/UsersShow';
+import UsersShowView from './views/UsersShowView';
 
 function App() {
   const history = useHistory();
@@ -104,7 +104,7 @@ function App() {
             )}
           </Route>
           <Route exact path="/users/:userId">
-            {currentUser ? <UsersShow /> : <Redirect to="/" />}
+            {currentUser ? <UsersShowView /> : <Redirect to="/" />}
           </Route>
         </Switch>
       </main>
