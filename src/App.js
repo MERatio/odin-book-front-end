@@ -9,6 +9,7 @@ import Alerts from './components/Alerts';
 import Navbar from './components/Navbar';
 import SignUpModal from './components/SignUpModal';
 import SignInView from './views/SignInView';
+import PostsIndexView from './views/PostsIndexView';
 import UsersShowView from './views/UsersShowView';
 
 function App() {
@@ -94,14 +95,7 @@ function App() {
             )}
           </Route>
           <Route exact path="/posts">
-            {currentUser ? (
-              <>
-                <h1>TODO: timeline</h1>
-                {JSON.stringify(currentUser)}
-              </>
-            ) : (
-              <Redirect to="/" />
-            )}
+            {currentUser ? <PostsIndexView /> : <Redirect to="/" />}
           </Route>
           <Route exact path="/users/:userId">
             {currentUser ? <UsersShowView /> : <Redirect to="/" />}
