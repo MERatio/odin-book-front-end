@@ -66,7 +66,11 @@ function App() {
   }, []);
 
   return isLoading ? (
-    <BootstrapSpinner type={'grow'} size={'3em'} />
+    <BootstrapSpinner
+      type={'grow'}
+      size={'3em'}
+      classes={'position-absolute top-50 start-50 translate-middle'}
+    />
   ) : (
     <>
       {currentUser && <Navbar currentUser={currentUser} signOut={signOut} />}

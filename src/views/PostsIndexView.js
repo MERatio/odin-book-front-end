@@ -60,7 +60,11 @@ function Posts() {
 	}, [isMounted, currentPage, postsLimit]);
 
 	return isFetchingData ? (
-		<BootstrapSpinner type={'border'} size={'2em'} />
+		<BootstrapSpinner
+			type={'border'}
+			size={'2em'}
+			classes={'position-absolute top-50 start-50 translate-middle'}
+		/>
 	) : (
 		<div className="container mt-3">
 			<div className="row justify-content-center">
