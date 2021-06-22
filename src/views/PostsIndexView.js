@@ -5,7 +5,7 @@ import getData from '../lib/getData';
 import BootstrapSpinner from '../components/BootstrapSpinner';
 import PostsCards from '../components/PostsCards';
 
-function Posts() {
+function PostsIndexView() {
 	const isMounted = useIsMounted();
 
 	const [
@@ -97,4 +97,4 @@ function Posts() {
 	);
 }
 
-export default Posts;
+export default PostsIndexView;
