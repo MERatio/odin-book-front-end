@@ -1,65 +1,68 @@
 import { useState, useEffect } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import useIsMounted from '../hooks/useIsMounted';
-import useQuery from '../hooks/useQuery';
 import getData from '../lib/getData';
 import BootstrapSpinner from '../components/BootstrapSpinner';
 import PostsCards from '../components/PostsCards';
-import Pagination from '../components/Pagination';
 
 function Posts() {
 	const isMounted = useIsMounted();
-	const query = useQuery();
 
-	const [currentPage, setCurrentPage] = useState(null);
-	const [postsLimit, setPostsLimit] = useState(null);
-	const [isFetchingData, setIsFetchingData] = useState(false);
+	const [
+		isFetchingInitialCurrentPosts,
+		setIsFetchingInitialCurrentPosts,
+	] = useState(true);
+	const [currentPage, setCurrentPage] = useState(1);
 	const [currentPosts, setCurrentPosts] = useState([]);
-	const [pagesCount, setPagesCount] = useState(0);
+	const [totalPostsCount, setTotalPostsCount] = useState(undefined);
+	const [hasMore, setHasMore] = useState(false);
+
+	function incrementCurrentPage() {
+		setCurrentPage((prevCurrentPage) => prevCurrentPage + 1);
+	}
 
 	useEffect(() => {
 		if (!isMounted) {
 			return;
 		}
-		const page = parseInt(query.get('page'), 10) || 1;
-		const limit = parseInt(query.get('limit'), 10) || 10;
-		if (page !== currentPage || limit !== postsLimit) {
-			setCurrentPage(page < 1 ? 1 : page);
-			setPostsLimit(limit < 10 ? 10 : limit);
-		}
-	}, [isMounted, query, currentPage, postsLimit]);
 
-	useEffect(() => {
-		if (!isMounted || currentPage === null || postsLimit === null) {
-			return;
-		}
 		async function fetchAndSetData() {
 			async function fetchData() {
 				try {
-					const data = await getData(
-						`${process.env.REACT_APP_API_URL}/posts?page=${currentPage}&limit=${postsLimit}`
+					return await getData(
+						`${
+							process.env.REACT_APP_API_URL
+						}/posts?page=${currentPage}&limit=${10}`
 					);
-					if (data.err) {
-						window.alerts([{ msg: data.err.message }]);
-					} else {
-						return data;
-					}
 				} catch (err) {
 					window.alerts([{ msg: err.message }]);
 				}
 			}
 
-			setIsFetchingData(true);
+			currentPage === 1 && setIsFetchingInitialCurrentPosts(true);
 			const data = await fetchData();
-			setIsFetchingData(false);
-			if (!data.err) {
-				setCurrentPosts(data.currentPosts);
-				setPagesCount(Math.ceil(data.totalPostsCount / postsLimit));
+			currentPage === 1 && setIsFetchingInitialCurrentPosts(false);
+			if (data.err) {
+				window.alerts([{ msg: data.err.message }]);
+			} else {
+				setCurrentPosts((prevCurrentPosts) =>
+					prevCurrentPosts.concat(data.currentPosts)
+				);
+				setTotalPostsCount(data.totalPostsCount);
 			}
 		}
-		fetchAndSetData();
-	}, [isMounted, currentPage, postsLimit]);
 
-	return isFetchingData ? (
+		fetchAndSetData();
+	}, [isMounted, currentPage]);
+
+	useEffect(() => {
+		if (!isMounted || typeof totalPostsCount !== 'number') {
+			return;
+		}
+		setHasMore(currentPosts.length < totalPostsCount);
+	}, [isMounted, isFetchingInitialCurrentPosts, currentPosts, totalPostsCount]);
+
+	return isFetchingInitialCurrentPosts ? (
 		<BootstrapSpinner
 			type={'border'}
 			size={'2em'}
@@ -70,16 +73,24 @@ function Posts() {
 			<div className="row justify-content-center">
 				<div className="col-md-8">
 					<section>
-						<PostsCards posts={currentPosts} />
+						<InfiniteScroll
+							dataLength={currentPosts.length}
+							next={incrementCurrentPage}
+							hasMore={hasMore}
+							loader={
+								<div className="d-flex justify-content-center">
+									<BootstrapSpinner type={'border'} size={'2em'} />
+								</div>
+							}
+							/* This div's scrollbar flickers if loader is BootstrapSpinner
+								 with size bigger than 1em (I only test for 1em).
+								 Setting overflow to none fix the problem.
+							*/
+							style={{ overflow: 'none' }}
+						>
+							<PostsCards posts={currentPosts} />
+						</InfiniteScroll>
 					</section>
-					{currentPosts.length > 0 && pagesCount > 1 && (
-						<Pagination
-							route={'/posts'}
-							currentPage={currentPage}
-							itemsLimit={postsLimit}
-							pagesCount={pagesCount}
-						/>
-					)}
 				</div>
 			</div>
 		</div>
