@@ -8,13 +8,10 @@ import PostsCards from '../components/PostsCards';
 function PostsIndexView() {
 	const isMounted = useIsMounted();
 
-	const [
-		isFetchingInitialCurrentPosts,
-		setIsFetchingInitialCurrentPosts,
-	] = useState(true);
+	const [isFetchingInitialPosts, setIsFetchingInitialPosts] = useState(true);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [currentPosts, setCurrentPosts] = useState([]);
-	const [totalPostsCount, setTotalPostsCount] = useState(undefined);
+	const [posts, setPosts] = useState([]);
+	const [totalPosts, setTotalPosts] = useState(undefined);
 	const [hasMore, setHasMore] = useState(false);
 
 	function incrementCurrentPage() {
@@ -26,43 +23,62 @@ function PostsIndexView() {
 			return;
 		}
 
-		async function fetchAndSetData() {
-			async function fetchData() {
-				try {
-					return await getData(
-						`${
-							process.env.REACT_APP_API_URL
-						}/posts?page=${currentPage}&limit=${10}`
-					);
-				} catch (err) {
-					window.alerts([{ msg: err.message }]);
-				}
-			}
-
-			currentPage === 1 && setIsFetchingInitialCurrentPosts(true);
-			const data = await fetchData();
-			currentPage === 1 && setIsFetchingInitialCurrentPosts(false);
-			if (data.err) {
-				window.alerts([{ msg: data.err.message }]);
-			} else {
-				setCurrentPosts((prevCurrentPosts) =>
-					prevCurrentPosts.concat(data.currentPosts)
+		async function fetchAndSetPosts() {
+			try {
+				currentPage === 1 && setIsFetchingInitialPosts(true);
+				const postsData = await getData(
+					`${
+						process.env.REACT_APP_API_URL
+					}/posts?page=${currentPage}&limit=${10}`
 				);
-				setTotalPostsCount(data.totalPostsCount);
+				if (postsData.err) {
+					window.alerts([{ msg: postsData.err.message }]);
+					return;
+				} else {
+					const posts = await Promise.all(
+						postsData.posts.map(async (post) => {
+							const reactionsData = await getData(
+								`${process.env.REACT_APP_API_URL}/posts/${post._id}/reactions`
+							);
+							if (reactionsData.err) {
+								window.alerts([{ msg: reactionsData.err.message }]);
+								return;
+							}
+							const commentsData = await getData(
+								`${process.env.REACT_APP_API_URL}/posts/${post._id}/comments`
+							);
+							if (commentsData.err) {
+								window.alerts([{ msg: commentsData.err.message }]);
+								return;
+							}
+							return {
+								...post,
+								reactions: reactionsData.reactions,
+								comments: commentsData.comments,
+							};
+						})
+					);
+					setPosts((prevPosts) => prevPosts.concat(posts));
+					setTotalPosts(postsData.totalPosts);
+				}
+				currentPage === 1 && setIsFetchingInitialPosts(false);
+			} catch (err) {
+				currentPage === 1 && setIsFetchingInitialPosts(false);
+				window.alerts([{ msg: err.message }]);
 			}
 		}
 
-		fetchAndSetData();
+		fetchAndSetPosts();
 	}, [isMounted, currentPage]);
 
 	useEffect(() => {
-		if (!isMounted || typeof totalPostsCount !== 'number') {
+		if (!isMounted || typeof totalPosts !== 'number') {
 			return;
 		}
-		setHasMore(currentPosts.length < totalPostsCount);
-	}, [isMounted, isFetchingInitialCurrentPosts, currentPosts, totalPostsCount]);
+		setHasMore(posts.length < totalPosts);
+	}, [isMounted, isFetchingInitialPosts, posts, totalPosts]);
 
-	return isFetchingInitialCurrentPosts ? (
+	return isFetchingInitialPosts ? (
 		<BootstrapSpinner
 			type={'border'}
 			size={'2em'}
@@ -74,7 +90,7 @@ function PostsIndexView() {
 				<div className="col-md-8">
 					<section>
 						<InfiniteScroll
-							dataLength={currentPosts.length}
+							dataLength={posts.length}
 							next={incrementCurrentPage}
 							hasMore={hasMore}
 							loader={
@@ -88,7 +104,7 @@ function PostsIndexView() {
 							*/
 							style={{ overflow: 'none' }}
 						>
-							<PostsCards posts={currentPosts} />
+							<PostsCards posts={posts} />
 						</InfiniteScroll>
 					</section>
 				</div>
