@@ -1,4 +1,4 @@
-function getUserPicture(post) {
+function getPostPicture(post) {
 	const picture = post.picture;
 	const postPicture = picture.isLocal
 		? picture.filename === ''
@@ -8,4 +8,4 @@ function getUserPicture(post) {
 	return postPicture;
 }
 
-export default getUserPicture;
+export default getPostPicture;
