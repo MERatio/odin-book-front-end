@@ -11,6 +11,7 @@ import SignUpModal from './components/SignUpModal';
 import SignInView from './views/SignInView';
 import PostsIndexView from './views/PostsIndexView';
 import UsersShowView from './views/UsersShowView';
+import NotFoundView from './views/NotFoundView';
 
 function App() {
   const history = useHistory();
@@ -103,6 +104,9 @@ function App() {
           </Route>
           <Route exact path="/users/:userId">
             {currentUser ? <UsersShowView /> : <Redirect to="/" />}
+          </Route>
+          <Route>
+            <NotFoundView />
           </Route>
         </Switch>
       </main>
