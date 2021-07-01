@@ -1,4 +1,4 @@
-async function getData(url = '') {
+async function getData(url = '', getResponse = false) {
 	const response = await fetch(url, {
 		method: 'GET',
 		headers: {
@@ -6,7 +6,7 @@ async function getData(url = '') {
 			Authorization: `Bearer ${localStorage.getItem('jwt')}`,
 		},
 	});
-	return response.json();
+	return getResponse ? response : response.json();
 }
 
 export default getData;
