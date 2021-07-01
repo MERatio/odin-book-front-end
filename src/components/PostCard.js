@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
 import pluralize from 'pluralize';
-import getPostPicture from '../lib/getPostPicture';
+import getPictureLinkOf from '../lib/getPictureLinkOf';
 
 function PostCard({ post }) {
-	const postPicture = getPostPicture(post);
+	const postPicture = getPictureLinkOf(post);
 
 	return (
 		<article className="card mb-3">
