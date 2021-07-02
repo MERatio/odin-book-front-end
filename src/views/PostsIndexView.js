@@ -76,7 +76,7 @@ function PostsIndexView() {
 			return;
 		}
 		setHasMore(posts.length < totalPosts);
-	}, [isMounted, isFetchingInitialPosts, posts, totalPosts]);
+	}, [isMounted, posts, totalPosts]);
 
 	return isFetchingInitialPosts ? (
 		<BootstrapSpinner
