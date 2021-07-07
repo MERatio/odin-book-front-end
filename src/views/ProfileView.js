@@ -158,7 +158,6 @@ function ProfileView(props) {
 		if (typeof totalPosts !== 'number') {
 			return;
 		}
-		isMounted && console.log('hasMore');
 		isMounted && setHasMore(posts.length < totalPosts);
 	}, [isMounted, posts, totalPosts]);
 
