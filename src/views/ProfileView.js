@@ -35,63 +35,57 @@ function ProfileView(props) {
 	// if user leaves the page when there's an async task.
 
 	useEffect(() => {
-		async function fetchAndSetUser() {
-			async function fetchResponse() {
-				try {
-					return await getData(
-						`${process.env.REACT_APP_API_URL}/users/${userId}`,
-						true
-					);
-				} catch (err) {
-					isMounted && setIsUserLoading(false);
-					window.alerts([{ msg: err.message }]);
-				}
-			}
+		// useEffect called twice without isMounted.
+		// useEffect is called twice because of isMounted changing value from false to true).
+		if (!isMounted) {
+			return;
+		}
 
-			const response = await fetchResponse();
-			if (response.status === 404) {
-				isMounted && setIs404(true);
-			} else {
-				const data = await response.json();
-				if (data.err) {
-					window.alerts([{ msg: data.err.message }]);
+		async function fetchAndSetUser() {
+			try {
+				const response = await getData(
+					`${process.env.REACT_APP_API_URL}/users/${userId}`,
+					true
+				);
+				if (response.status === 404) {
+					isMounted && setIs404(true);
 				} else {
-					isMounted && setUser(data.user);
+					const data = await response.json();
+					if (data.err) {
+						window.alerts([{ msg: data.err.message }]);
+					} else {
+						isMounted && setUser(data.user);
+					}
 				}
+			} catch (err) {
+				window.alerts([{ msg: err.message }]);
 			}
 			isMounted && setIsUserLoading(false);
 		}
 
-		// Function called twice without isMounted.
-		// Function is called twice because of isMounted changing value from false to true).
-		isMounted && fetchAndSetUser();
+		fetchAndSetUser();
 	}, [isMounted, userId]);
 
 	useEffect(() => {
-		if (!user._id) {
+		if (!isMounted || !user._id) {
 			return;
 		}
 
 		async function fetchAndSetFriends() {
-			async function fetchData() {
-				try {
-					return await getData(
-						`${process.env.REACT_APP_API_URL}/users/${user._id}/friends?page=1&limit=10`
-					);
-				} catch (err) {
-					isMounted && setIsFriendsLoading(false);
-					window.alerts([{ msg: err.message }]);
+			try {
+				const data = await getData(
+					`${process.env.REACT_APP_API_URL}/users/${user._id}/friends?page=1&limit=10`
+				);
+				if (data.err) {
+					window.alerts([{ msg: data.err.message }]);
+				} else {
+					if (isMounted) {
+						setFriends(data.users);
+						setTotalFriends(data.totalUsers);
+					}
 				}
-			}
-
-			const data = await fetchData();
-			if (data.err) {
-				window.alerts([{ msg: data.err.message }]);
-			} else {
-				if (isMounted) {
-					setFriends(data.users);
-					setTotalFriends(data.totalUsers);
-				}
+			} catch (err) {
+				window.alerts([{ msg: err.message }]);
 			}
 			isMounted && setIsFriendsLoading(false);
 		}
@@ -100,53 +94,48 @@ function ProfileView(props) {
 	}, [isMounted, user]);
 
 	useEffect(() => {
-		if ((isMounted, !user._id)) {
+		if (!isMounted || !user._id) {
 			return;
 		}
 
 		async function fetchAndSetPosts() {
-			async function fetchData() {
-				try {
-					return await getData(
-						`${process.env.REACT_APP_API_URL}/users/${user._id}/posts?page=${currentPage}&limit=10`
-					);
-				} catch (err) {
-					isMounted && currentPage === 1 && setIsInitialPostsLoading(false);
-					window.alerts([{ msg: err.message }]);
-				}
-			}
-			const data = await fetchData();
-			if (data.err) {
-				window.alerts([{ msg: data.err.message }]);
-				return;
-			} else {
-				const posts = await Promise.all(
-					data.posts.map(async (post) => {
-						const reactionsData = await getData(
-							`${process.env.REACT_APP_API_URL}/posts/${post._id}/reactions`
-						);
-						if (reactionsData.err) {
-							window.alerts([{ msg: reactionsData.err.message }]);
-							return;
-						}
-						const commentsData = await getData(
-							`${process.env.REACT_APP_API_URL}/posts/${post._id}/comments`
-						);
-						if (commentsData.err) {
-							window.alerts([{ msg: commentsData.err.message }]);
-							return;
-						}
-						return {
-							...post,
-							reactions: reactionsData.reactions,
-							comments: commentsData.comments,
-						};
-					})
+			try {
+				const data = await getData(
+					`${process.env.REACT_APP_API_URL}/users/${user._id}/posts?page=${currentPage}&limit=10`
 				);
-				if (isMounted) {
-					setPosts((prevPosts) => prevPosts.concat(posts));
-					setTotalPosts(data.totalPosts);
+				if (data.err) {
+					window.alerts([{ msg: data.err.message }]);
+				} else {
+					const posts = await Promise.all(
+						data.posts.map(async (post) => {
+							const reactionsData = await getData(
+								`${process.env.REACT_APP_API_URL}/posts/${post._id}/reactions`
+							);
+							if (reactionsData.err) {
+								window.alerts([{ msg: reactionsData.err.message }]);
+								return;
+							}
+							const commentsData = await getData(
+								`${process.env.REACT_APP_API_URL}/posts/${post._id}/comments`
+							);
+							if (commentsData.err) {
+								window.alerts([{ msg: commentsData.err.message }]);
+								return;
+							}
+							return {
+								...post,
+								reactions: reactionsData.reactions,
+								comments: commentsData.comments,
+							};
+						})
+					);
+					if (isMounted) {
+						setPosts((prevPosts) => prevPosts.concat(posts));
+						setTotalPosts(data.totalPosts);
+					}
 				}
+			} catch (err) {
+				window.alerts([{ msg: err.message }]);
 			}
 			isMounted && currentPage === 1 && setIsInitialPostsLoading(false);
 		}

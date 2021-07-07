@@ -8,7 +8,7 @@ import PostsCards from '../components/PostsCards';
 function PostsIndexView() {
 	const isMounted = useIsMounted();
 
-	const [isFetchingInitialPosts, setIsFetchingInitialPosts] = useState(true);
+	const [isInitialPostsLoading, setIsInitialPostsLoading] = useState(true);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [posts, setPosts] = useState([]);
 	const [totalPosts, setTotalPosts] = useState(undefined);
@@ -25,18 +25,17 @@ function PostsIndexView() {
 
 		async function fetchAndSetPosts() {
 			try {
-				currentPage === 1 && setIsFetchingInitialPosts(true);
-				const postsData = await getData(
+				isMounted && currentPage === 1 && setIsInitialPostsLoading(true);
+				const data = await getData(
 					`${
 						process.env.REACT_APP_API_URL
 					}/posts?page=${currentPage}&limit=${10}`
 				);
-				if (postsData.err) {
-					window.alerts([{ msg: postsData.err.message }]);
-					return;
+				if (data.err) {
+					window.alerts([{ msg: data.err.message }]);
 				} else {
 					const posts = await Promise.all(
-						postsData.posts.map(async (post) => {
+						data.posts.map(async (post) => {
 							const reactionsData = await getData(
 								`${process.env.REACT_APP_API_URL}/posts/${post._id}/reactions`
 							);
@@ -58,14 +57,15 @@ function PostsIndexView() {
 							};
 						})
 					);
-					setPosts((prevPosts) => prevPosts.concat(posts));
-					setTotalPosts(postsData.totalPosts);
+					if (isMounted) {
+						setPosts((prevPosts) => prevPosts.concat(posts));
+						setTotalPosts(data.totalPosts);
+					}
 				}
-				currentPage === 1 && setIsFetchingInitialPosts(false);
 			} catch (err) {
-				currentPage === 1 && setIsFetchingInitialPosts(false);
 				window.alerts([{ msg: err.message }]);
 			}
+			isMounted && currentPage === 1 && setIsInitialPostsLoading(false);
 		}
 
 		fetchAndSetPosts();
@@ -78,7 +78,7 @@ function PostsIndexView() {
 		setHasMore(posts.length < totalPosts);
 	}, [isMounted, posts, totalPosts]);
 
-	return isFetchingInitialPosts ? (
+	return isInitialPostsLoading ? (
 		<BootstrapSpinner
 			type={'border'}
 			size={'2em'}
