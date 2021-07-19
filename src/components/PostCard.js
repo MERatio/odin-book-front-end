@@ -11,7 +11,7 @@ function PostCard({ post }) {
 
 	return (
 		<article className="card mb-3">
-			<div className="card-header d-flex align-items-center">
+			<div className="d-flex align-items-center p-3 pb-2">
 				<Link to={`/users/${post.author._id}`}>
 					<img
 						src={authorPicture}
@@ -31,6 +31,9 @@ function PostCard({ post }) {
 					</p>
 				</div>
 			</div>
+			<div className="px-3 pb-2">
+				<p className="mb-0">{post.text}</p>
+			</div>
 			{postPicture && (
 				<Link to={`/posts/${post._id}`}>
 					<img
@@ -40,8 +43,7 @@ function PostCard({ post }) {
 					/>
 				</Link>
 			)}
-			<div className="card-body">
-				<p className="card-text">{post.text}</p>
+			<div className="p-3">
 				<Link to={`/posts/${post._id}/reactions`} className="card-link">
 					{post.reactions.length} reactions
 				</Link>
