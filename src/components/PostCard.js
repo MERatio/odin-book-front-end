@@ -20,9 +20,12 @@ function PostCard({ post }) {
 					/>
 				</Link>
 				<div>
-					<p className="card-subtitle mb-1">
+					<Link
+						to={`/users/${post.author._id}`}
+						className="text-dark fw-bold h5 author-link"
+					>
 						{post.author.firstName + ' ' + post.author.lastName}
-					</p>
+					</Link>
 					<p className="card-subtitle">
 						{format(new Date(post.updatedAt), 'PPpp')}
 					</p>

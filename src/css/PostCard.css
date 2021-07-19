@@ -2,3 +2,11 @@
 	width: 3em;
 	height: 3em;
 }
+
+.author-link {
+	text-decoration: none;
+}
+
+.author-link:hover {
+	text-decoration: underline;
+}
