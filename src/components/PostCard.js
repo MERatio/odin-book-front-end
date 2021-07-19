@@ -10,7 +10,6 @@ function PostCard({ post }) {
 	return (
 		<article className="card mb-3">
 			<div className="card-header">
-				<h5 className="card-title">{post.title}</h5>
 				<p className="card-subtitle mb-2">
 					{post.author.firstName + ' ' + post.author.lastName}
 				</p>
