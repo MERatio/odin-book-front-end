@@ -5,13 +5,13 @@ import getData from '../lib/getData';
 import getUserFullName from '../lib/getUserFullName';
 import NotFoundView from './NotFoundView';
 import BootstrapSpinner from '../components/BootstrapSpinner';
-import ProfilePicture from '../components/ProfilePicture';
-import ProfileFriends from '../components/ProfileFriends';
-import ProfilePosts from '../components/ProfilePosts';
+import UserPicture from '../components/UserPicture';
+import UserFriends from '../components/UserFriends';
+import UserPosts from '../components/UserPosts';
 
-import '../css/ProfileView.scss';
+import '../css/UsersShow.scss';
 
-function ProfileView(props) {
+function UsersShow(props) {
 	const { userId } = useParams();
 	const isMounted = useIsMounted();
 
@@ -162,7 +162,7 @@ function ProfileView(props) {
 		<div className="container mt-3">
 			<div className="row">
 				<div className="col-md-4">
-					<ProfilePicture user={user} />
+					<UserPicture user={user} />
 					<h1 className="text-center">{getUserFullName(user)}</h1>
 					{isFriendsLoading ? (
 						<div className="position-relative" style={{ minHeight: '10em' }}>
@@ -173,7 +173,7 @@ function ProfileView(props) {
 							/>
 						</div>
 					) : (
-						<ProfileFriends
+						<UserFriends
 							userId={user._id}
 							friends={friends}
 							totalFriends={totalFriends}
@@ -190,7 +190,7 @@ function ProfileView(props) {
 							/>
 						</div>
 					) : (
-						<ProfilePosts
+						<UserPosts
 							posts={posts}
 							hasMore={hasMore}
 							incrementCurrentPage={incrementCurrentPage}
@@ -202,4 +202,4 @@ function ProfileView(props) {
 	);
 }
 
-export default ProfileView;
+export default UsersShow;

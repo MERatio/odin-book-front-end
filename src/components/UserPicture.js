@@ -1,20 +1,20 @@
 import PropTypes from 'prop-types';
 import getUserPictureLink from '../lib/getUserPictureLink';
 
-function ProfilePicture({ user }) {
+function UserPicture({ user }) {
 	return (
-		<div className="profile-picture-container">
+		<div className="user-picture-container">
 			<img
 				src={getUserPictureLink(user)}
 				alt="User"
-				className="img-thumbnail profile-picture"
+				className="img-thumbnail user-picture"
 			/>
 		</div>
 	);
 }
 
-ProfilePicture.propTypes = {
+UserPicture.propTypes = {
 	user: PropTypes.object.isRequired,
 };
 
-export default ProfilePicture;
+export default UserPicture;

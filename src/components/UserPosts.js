@@ -3,9 +3,9 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import BootstrapSpinner from './BootstrapSpinner';
 import PostsCards from './PostsCards';
 
-function ProfilePosts({ posts, hasMore, incrementCurrentPage }) {
+function UserPosts({ posts, hasMore, incrementCurrentPage }) {
 	return (
-		<section className="position-relative profile-posts">
+		<section className="position-relative">
 			<InfiniteScroll
 				dataLength={posts.length}
 				next={incrementCurrentPage}
@@ -23,10 +23,10 @@ function ProfilePosts({ posts, hasMore, incrementCurrentPage }) {
 	);
 }
 
-ProfilePosts.propTypes = {
+UserPosts.propTypes = {
 	posts: PropTypes.array.isRequired,
 	hasMore: PropTypes.bool.isRequired,
 	incrementCurrentPage: PropTypes.func.isRequired,
 };
 
-export default ProfilePosts;
+export default UserPosts;

@@ -10,7 +10,7 @@ import Navbar from './components/Navbar';
 import SignUpModal from './components/SignUpModal';
 import SignInView from './views/SignInView';
 import PostsIndexView from './views/PostsIndexView';
-import ProfileView from './views/ProfileView';
+import UsersShow from './views/UsersShow';
 import NotFoundView from './views/NotFoundView';
 
 function App() {
@@ -103,14 +103,14 @@ function App() {
             {currentUser ? <PostsIndexView /> : <Redirect to="/" />}
           </Route>
           {/* I used render method of Route to create new instance of 
-              ProfileView by passing userId as key.
+              UsersShow by passing userId as key.
           */}
           <Route
             exact
             path="/users/:userId"
             render={(props) => {
               return currentUser ? (
-                <ProfileView key={props.match.params.userId} {...props} />
+                <UsersShow key={props.match.params.userId} {...props} />
               ) : (
                 <Redirect to="/" />
               );
