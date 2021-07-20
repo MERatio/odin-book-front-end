@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import format from 'date-fns/format';
 import pluralize from 'pluralize';
 import getPictureLinkOf from '../lib/getPictureLinkOf';
+import getUserFullName from '../lib/getUserFullName';
 import '../css/PostCard.css';
 
 function PostCard({ post }) {
@@ -24,7 +25,7 @@ function PostCard({ post }) {
 						to={`/users/${post.author._id}`}
 						className="text-dark fw-bold h5 author-link"
 					>
-						{post.author.firstName + ' ' + post.author.lastName}
+						{getUserFullName(post.author)}
 					</Link>
 					<p className="card-subtitle">
 						{format(new Date(post.updatedAt), 'PPpp')}
