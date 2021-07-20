@@ -27,9 +27,7 @@ function PostsIndexView() {
 			try {
 				isMounted && currentPage === 1 && setIsInitialPostsLoading(true);
 				const data = await getData(
-					`${
-						process.env.REACT_APP_API_URL
-					}/posts?page=${currentPage}&limit=${10}`
+					`${process.env.REACT_APP_API_URL}/posts?page=${currentPage}&limit=10`
 				);
 				if (data.err) {
 					window.alerts([{ msg: data.err.message }]);
