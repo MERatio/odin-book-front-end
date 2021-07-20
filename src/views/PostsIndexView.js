@@ -85,27 +85,25 @@ function PostsIndexView() {
 	) : (
 		<div className="container mt-3">
 			<div className="row justify-content-center">
-				<div className="col-md-8">
-					<section>
-						<InfiniteScroll
-							dataLength={posts.length}
-							next={incrementCurrentPage}
-							hasMore={hasMore}
-							loader={
-								<div className="d-flex justify-content-center">
-									<BootstrapSpinner type={'border'} size={'2em'} />
-								</div>
-							}
-							/* This div's scrollbar flickers if loader is BootstrapSpinner
+				<section className="col-md-8">
+					<InfiniteScroll
+						dataLength={posts.length}
+						next={incrementCurrentPage}
+						hasMore={hasMore}
+						loader={
+							<div className="d-flex justify-content-center">
+								<BootstrapSpinner type={'border'} size={'2em'} />
+							</div>
+						}
+						/* This div's scrollbar flickers if loader is BootstrapSpinner
 								 with size bigger than 1em (I only test for 1em).
 								 Setting overflow to none fix the problem.
 							*/
-							style={{ overflow: 'none' }}
-						>
-							<PostsCards posts={posts} />
-						</InfiniteScroll>
-					</section>
-				</div>
+						style={{ overflow: 'none' }}
+					>
+						<PostsCards posts={posts} />
+					</InfiniteScroll>
+				</section>
 			</div>
 		</div>
 	);
