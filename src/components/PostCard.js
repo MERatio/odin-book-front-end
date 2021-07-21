@@ -46,10 +46,10 @@ function PostCard({ post }) {
 			)}
 			<div className="p-3">
 				<Link to={`/posts/${post._id}/reactions`} className="card-link">
-					{post.reactions.length} reactions
+					{post.totalReactions} reactions
 				</Link>
 				<Link to={`/posts/${post._id}`} className="card-link">
-					{pluralize('comments', post.comments.length, true)}
+					{pluralize('comments', post.totalComments, true)}
 				</Link>
 			</div>
 		</article>

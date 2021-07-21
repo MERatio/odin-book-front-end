@@ -50,8 +50,8 @@ function PostsIndexView() {
 							}
 							return {
 								...post,
-								reactions: reactionsData.reactions,
-								comments: commentsData.comments,
+								totalReactions: reactionsData.totalReactions,
+								totalComments: commentsData.totalComments,
 							};
 						})
 					);
