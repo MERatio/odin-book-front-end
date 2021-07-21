@@ -10,6 +10,7 @@ import Navbar from './components/Navbar';
 import SignUpModal from './components/SignUpModal';
 import SignInView from './views/SignInView';
 import PostsIndexView from './views/PostsIndexView';
+import PostsShowView from './views/PostsShowView';
 import UsersShow from './views/UsersShow';
 import NotFoundView from './views/NotFoundView';
 
@@ -105,6 +106,17 @@ function App() {
           {/* I used render method of Route to create new instance of 
               UsersShow by passing userId as key.
           */}
+          <Route
+            exact
+            path="/posts/:postId"
+            render={(props) => {
+              return currentUser ? (
+                <PostsShowView key={props.match.params.postId} {...props} />
+              ) : (
+                <Redirect to="/" />
+              );
+            }}
+          />
           <Route
             exact
             path="/users/:userId"
