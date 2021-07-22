@@ -9,9 +9,9 @@ import UserPicture from '../components/UserPicture';
 import UserFriends from '../components/UserFriends';
 import UserPosts from '../components/UserPosts';
 
-import '../css/UsersShow.scss';
+import '../css/UsersShowView.scss';
 
-function UsersShow(props) {
+function UsersShowView(props) {
 	const { userId } = useParams();
 	const isMounted = useIsMounted();
 
@@ -202,4 +202,4 @@ function UsersShow(props) {
 	);
 }
 
-export default UsersShow;
+export default UsersShowView;
