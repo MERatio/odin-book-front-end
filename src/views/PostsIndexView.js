@@ -25,7 +25,6 @@ function PostsIndexView() {
 
 		async function fetchAndSetPosts() {
 			try {
-				isMounted && currentPage === 1 && setIsInitialPostsLoading(true);
 				const data = await getData(
 					`${process.env.REACT_APP_API_URL}/posts?page=${currentPage}&limit=10`
 				);
