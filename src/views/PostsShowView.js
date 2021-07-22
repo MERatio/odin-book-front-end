@@ -66,7 +66,7 @@ function PostsShowView() {
 		async function fetchAndSetTotalReactions(isMounted, postId) {
 			try {
 				const data = await getData(
-					`${process.env.REACT_APP_API_URL}/posts/${postId}/reactions`
+					`${process.env.REACT_APP_API_URL}/posts/${postId}/reactions?noDocs=true`
 				);
 				if (data.err) {
 					window.alerts([{ msg: data.err.message }]);

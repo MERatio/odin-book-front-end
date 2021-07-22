@@ -34,14 +34,14 @@ function PostsIndexView() {
 					const posts = await Promise.all(
 						data.posts.map(async (post) => {
 							const reactionsData = await getData(
-								`${process.env.REACT_APP_API_URL}/posts/${post._id}/reactions`
+								`${process.env.REACT_APP_API_URL}/posts/${post._id}/reactions?noDocs=true`
 							);
 							if (reactionsData.err) {
 								window.alerts([{ msg: reactionsData.err.message }]);
 								return;
 							}
 							const commentsData = await getData(
-								`${process.env.REACT_APP_API_URL}/posts/${post._id}/comments`
+								`${process.env.REACT_APP_API_URL}/posts/${post._id}/comments?noDocs=true`
 							);
 							if (commentsData.err) {
 								window.alerts([{ msg: commentsData.err.message }]);
