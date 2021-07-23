@@ -35,7 +35,7 @@ function PostsShowView() {
 			return;
 		}
 
-		async function fetchAndSetPost(isMounted, postId) {
+		async function fetchAndSetPost() {
 			try {
 				const postResponse = await getData(
 					`${process.env.REACT_APP_API_URL}/posts/${postId}`,
@@ -55,7 +55,7 @@ function PostsShowView() {
 			}
 		}
 
-		fetchAndSetPost(isMounted, postId);
+		fetchAndSetPost();
 	}, [isMounted, postId]);
 
 	useEffect(() => {
@@ -63,10 +63,10 @@ function PostsShowView() {
 			return;
 		}
 
-		async function fetchAndSetTotalReactions(isMounted, postId) {
+		async function fetchAndSetTotalReactions() {
 			try {
 				const data = await getData(
-					`${process.env.REACT_APP_API_URL}/posts/${postId}/reactions?noDocs=true`
+					`${process.env.REACT_APP_API_URL}/posts/${post._id}/reactions?noDocs=true`
 				);
 				if (data.err) {
 					window.alerts([{ msg: data.err.message }]);
@@ -79,7 +79,7 @@ function PostsShowView() {
 			isMounted && setIsPostLoading(false);
 		}
 
-		fetchAndSetTotalReactions(isMounted, post._id);
+		fetchAndSetTotalReactions();
 	}, [isMounted, post]);
 
 	useEffect(() => {
@@ -87,10 +87,10 @@ function PostsShowView() {
 			return;
 		}
 
-		async function fetchAndSetComments(isMounted, postId, currentCommentsPage) {
+		async function fetchAndSetComments() {
 			try {
 				const data = await getData(
-					`${process.env.REACT_APP_API_URL}/posts/${postId}/comments?page=${currentCommentsPage}&limit=10`
+					`${process.env.REACT_APP_API_URL}/posts/${post._id}/comments?page=${currentCommentsPage}&limit=10`
 				);
 				if (data.err) {
 					window.alerts([{ msg: data.err.message }]);
@@ -108,7 +108,7 @@ function PostsShowView() {
 				setIsInitialCommentsLoading(false);
 		}
 
-		fetchAndSetComments(isMounted, post._id, currentCommentsPage);
+		fetchAndSetComments();
 	}, [isMounted, post, currentCommentsPage]);
 
 	useEffect(() => {
